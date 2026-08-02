@@ -6,7 +6,7 @@ it_dens_table <- wood_dens_table (bio.It, name = "it")
 Fsf_dens_table <- wood_dens_table (bio.Fsf, name = "Fsf")
 bp_dens_table <- wood_dens_table (bio.bp, name = "bp")
 Fbar_dens_table <- wood_dens_table (bio.Fbar, name = "Fbar")
-
+#########
 
 ################Biomass and species abundance######
 

@@ -586,6 +586,92 @@ dev.off()
 
 #######NMDS #######
 
+
+#############
+
+site_scores <- scores(nmds_biomass, display = "sites")
+set.seed (123)
+fit <- envfit(nmds_biomass,
+              NMDS_sites_biomass_stand,
+              permutations = 999)
+
+species_df <- data.frame(scores(fit, display = "vectors"))
+species_df$p_value <- fit$vectors$pvals
+
+species_df <- subset(species_df, p_value <= 0.05)
+species_df$cep_names <- make.cepnames(row.names( species_df),
+                                       minlengths = c(3,3))
+
+species_df$x_offset <- runif(
+  nrow(species_df),
+  min = -0.45,
+  max = 0.45
+)
+
+species_df$y_offset <- runif(
+  nrow(species_df),
+  min = -0.5,
+  max = 0.5
+)
+
+species_df [species_df$cep_names == "Cabcan",6] <- species_df [species_df$cep_names == "Cabcan",6] - 0.1
+species_df [species_df$cep_names == "Chrmar",6] <- species_df [species_df$cep_names == "Chrmar",6] - 0.25
+species_df [species_df$cep_names == "Luediv",5] <- species_df [species_df$cep_names == "Luediv",5] - 0.15
+species_df [species_df$cep_names == "Cupver",6] <- species_df [species_df$cep_names == "Cupver",6] + 0.05
+species_df [species_df$cep_names == "Pipgon",6] <- species_df [species_df$cep_names == "Pipgon",6] - 0.05
+species_df [species_df$cep_names == "Symfal",6] <- species_df [species_df$cep_names == "Symfal",6] - 0.03
+species_df [species_df$cep_names == "Macsti",6] <- species_df [species_df$cep_names == "Macsti",6] - 0.07
+species_df [species_df$cep_names == "Camxan",6] <- species_df [species_df$cep_names == "Camxan",6] - 0.14
+
+jpeg(filename = "nmds_plot_new.jpg",
+     width = 850,height = 550,
+     , # fun��o salva gr�ficos em .jpg
+     units = "px", quality = 75,
+     bg = "white")
+
+par (mfrow=c(1,1)#divisão janela gráfica direira da virgula divide por linha
+     # esquerda por coluna
+     ,mar = c(5,5,2,1)# margem
+     , cex.axis=1.5 # tamanho fonte eixos
+     , cex.lab=2 #tamanho fonte legenda
+     , cex.main=2.5 #tamanho fonte título
+     ,family="mono"# fonte da letra
+     , las=1,# orientação dos números eixo y
+     tcl=0.3# orientação traços do eixo
+     ,mgp=c(3,0.3,0),
+     bty = "l")
+ordiplot (nmds_biomass,
+          type = "n",
+          xlim = c(-1.5,1.5),
+          ylim =c(-1.5,1.5))
+points(nmds_biomass,
+       display = "sites",
+       pch = c(21,21,
+               24,24,24, 24),
+       bg = c(rep("lightgreen", 2)
+              ,rep ("darkgreen",4)),
+       cex = 2
+)
+
+text(
+  species_df[, 1]+species_df$x_offset ,
+  species_df[, 2]+species_df$y_offset,
+  labels = species_df$cep_names,
+  cex = 1.5,
+  col = "darkblue"
+)
+text(
+  site_scores[, 1]+ c(-0.2,0.2,-0.2,
+                      rep (0.2,3)),
+  site_scores[, 2]+ c(0,0,0.05,0,0,0),
+  labels = rownames(site_scores),
+  cex = 2
+)
+
+dev.off ()
+
+#############
+
 set.seed (123)
 fit <- envfit(nmds_biomass,
               NMDS_sites_biomass_stand,
